@@ -1,6 +1,6 @@
 'use client';
 
-import { FieldError, useForm } from 'react-hook-form';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 
 interface HookFormTypes {
     id: string;
@@ -8,17 +8,19 @@ interface HookFormTypes {
 }
 
 export default function LoginForm() {
-    const { register, handleSubmit } = useForm<HookFormTypes>();
-    const onValid = (data: HookFormTypes) => {
-        console.log(data);
+    const { register, handleSubmit, getValues } = useForm<HookFormTypes>();
+    const onValid: SubmitHandler<HookFormTypes> = () => {
+        const id = getValues('id');
+        const pw = getValues('password');
+        console.log(id, pw);
     };
-    const onInValid = (errors: FieldError) => {
-        console.log(errors);
+    const onInValid: SubmitErrorHandler<HookFormTypes> = (errors) => {
+        console.error(errors);
     };
 
     return (
         <div>
-            <form className="flex flex-col gap-2" onSubmit={handleSubmit(onValid)}>
+            <form className="flex flex-col gap-2" onSubmit={handleSubmit(onValid, onInValid)}>
                 <input
                     {...register('id', {
                         required: true,
@@ -43,7 +45,7 @@ export default function LoginForm() {
                     type="submit"
                     placeholder="로그인"
                     className=" text-white px-4 py-2 rounded-md bg-[rgba(255,72,105,1)]"
-                />
+                />{' '}
             </form>
 
             <div className="mt-4 space-x-2">
