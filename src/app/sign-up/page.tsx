@@ -17,7 +17,12 @@ interface SignUpForm {
 }
 
 export default function SignUp() {
-    const { register, handleSubmit } = useForm<SignUpForm>();
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm<SignUpForm>({ mode: 'onBlur' });
     const onValid: SubmitHandler<SignUpForm> = (data) => {
         console.log(data);
     };
@@ -25,6 +30,7 @@ export default function SignUp() {
     const onInValid: SubmitErrorHandler<SignUpForm> = (errors) => {
         console.log(errors);
     };
+    const password = watch('password');
     return (
         <div className="max-w-xl mx-auto p-6 space-y-8">
             <h1 className="text-[#ff3c60] text-3xl font-extrabold text-center">ㅂㄹㅁㄹ</h1>
@@ -48,21 +54,36 @@ export default function SignUp() {
                     <div>
                         비밀번호
                         <input
-                            {...register('password')}
+                            {...register('password', {
+                                required: '비밀번호를 입력해주세요',
+                                minLength: {
+                                    value: 8,
+                                    message: '비밀번호는 최소 8자 이상이어야 합니다',
+                                },
+                                pattern: {
+                                    value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                                    message: '비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다',
+                                },
+                            })}
                             type="password"
                             placeholder="비밀번호"
                             className="w-full p-3 border rounded-lg"
                         />
+                        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
                     </div>
                     <div>
-                        {' '}
-                        비밀번호 확인
                         <input
-                            {...register('passwordCheck')}
+                            {...register('passwordCheck', {
+                                required: '비밀번호를 다시 입력해주세요',
+                                validate: (value) => value === password || '비밀번호가 일치하지 않습니다',
+                            })}
                             type="password"
                             placeholder="비밀번호 확인"
                             className="w-full p-3 border rounded-lg"
                         />
+                        {errors.passwordCheck && (
+                            <p className="text-red-500 text-sm mt-1">{errors.passwordCheck.message}</p>
+                        )}
                     </div>
                     <div>
                         이름
