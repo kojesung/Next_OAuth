@@ -11,12 +11,14 @@ export const useStore = create<UserState>((set) => ({
     name: '',
     isLoggedIn: false,
     login: (userName: string) =>
-        set(() => ({
+        set((state) => ({
+            ...state, // 기존 상태 유지
             name: userName,
             isLoggedIn: true,
         })),
     logout: () =>
-        set(() => ({
+        set((state) => ({
+            ...state, // 기존 상태 유지
             name: '',
             isLoggedIn: false,
         })),

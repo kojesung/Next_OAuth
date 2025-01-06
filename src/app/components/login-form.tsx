@@ -1,5 +1,6 @@
 'use client';
 
+import { useStore } from '@/hooks/useUserInfo';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 
 interface HookFormTypes {
@@ -9,14 +10,19 @@ interface HookFormTypes {
 
 export default function LoginForm() {
     const { register, handleSubmit, getValues } = useForm<HookFormTypes>();
+    const login = useStore((state) => state.login);
     const onValid: SubmitHandler<HookFormTypes> = () => {
         const id = getValues('id');
         const pw = getValues('password');
         console.log(id, pw);
+        login('고제성');
     };
     const onInValid: SubmitErrorHandler<HookFormTypes> = (errors) => {
         console.error(errors);
     };
+    const name = useStore((state) => state.name);
+
+    console.log(name);
 
     return (
         <div>
