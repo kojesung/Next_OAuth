@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 
 interface SignUpForm {
@@ -17,6 +18,7 @@ interface SignUpForm {
 }
 
 export default function SignUp() {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -25,6 +27,7 @@ export default function SignUp() {
     } = useForm<SignUpForm>({ mode: 'onBlur' });
     const onValid: SubmitHandler<SignUpForm> = (data) => {
         console.log(data);
+        router.push('/login');
     };
 
     const onInValid: SubmitErrorHandler<SignUpForm> = (errors) => {

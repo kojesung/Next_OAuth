@@ -1,6 +1,7 @@
 'use client';
 
 import { useStore } from '@/hooks/useUserInfo';
+import Link from 'next/link';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 
 interface HookFormTypes {
@@ -57,7 +58,9 @@ export default function LoginForm() {
             <div className="mt-4 space-x-2">
                 <button className="text-gray-600">아이디 찾기</button>
                 <button className="text-gray-600">비밀번호 찾기</button>
-                <button className="text-gray-600">회원가입</button>
+                <Link className="text-gray-600" href="/sign-up">
+                    회원가입
+                </Link>
             </div>
             <div className="mt-4 space-x-2">
                 <button className="bg-green-500 text-white px-4 py-2 rounded-md">네이버</button>
