@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 
 interface SignUpForm {
@@ -17,6 +18,12 @@ interface SignUpForm {
     confirmCode: string;
 }
 
+const checkDuplicateId = async (id: string) => {
+    const response = await fetch('/data/user.json');
+    const data = await response.json();
+    return data.users.some((user: { id: string }) => user.id === id);
+};
+
 export default function SignUp() {
     const router = useRouter();
     const {
@@ -24,8 +31,40 @@ export default function SignUp() {
         handleSubmit,
         watch,
         formState: { errors },
+        setError,
+        clearErrors,
     } = useForm<SignUpForm>({ mode: 'onBlur' });
+
+    const [isIdChecked, setIsIdChecked] = useState(false); // 중복 확인 감지하는 상태
+
+    const handleCheckId = async (e: React.MouseEvent) => {
+        // 중복 확인하고 form 에러 설정해주는 함수
+        e.preventDefault(); // 폼 제출 방지
+        const currentId = watch('id');
+
+        if (!currentId) {
+            setError('id', { message: '아이디를 입력해주세요' });
+            return;
+        }
+
+        const isDuplicate = await checkDuplicateId(currentId);
+
+        if (isDuplicate) {
+            setError('id', { message: '이미 사용중인 아이디입니다' });
+            setIsIdChecked(false);
+        } else {
+            clearErrors('id');
+            setIsIdChecked(true);
+            alert('사용 가능한 아이디입니다');
+        }
+    };
+
     const onValid: SubmitHandler<SignUpForm> = (data) => {
+        if (!isIdChecked) {
+            // 폼 제출 전 중복 확인 절차
+            setError('id', { message: '아이디 중복 확인이 필요합니다' });
+            return;
+        }
         console.log(data);
         router.push('/login');
     };
@@ -33,6 +72,7 @@ export default function SignUp() {
     const onInValid: SubmitErrorHandler<SignUpForm> = (errors) => {
         console.log(errors);
     };
+
     const password = watch('password');
     return (
         <div className="max-w-xl mx-auto p-6 space-y-8">
@@ -45,14 +85,22 @@ export default function SignUp() {
                         <div className="flex gap-2">
                             <div className="flex-grow">
                                 <input
-                                    {...register('id')}
+                                    {...register('id', {
+                                        onChange: () => {
+                                            // ID 변경 시 중복 확인 상태 초기화
+                                            setIsIdChecked(false);
+                                        },
+                                    })}
                                     type="text"
                                     placeholder="youthlab"
                                     className="w-full p-3 border rounded-lg"
                                 />
                             </div>
-                            <button className="bg-[#ff3c60] text-white px-4 py-2 rounded-lg">중복확인</button>
+                            <button onClick={handleCheckId} className="bg-[#ff3c60] text-white px-4 py-2 rounded-lg">
+                                중복확인
+                            </button>
                         </div>
+                        {errors.id && <p className="text-red-500 text-sm mt-1">{errors.id.message}</p>}
                     </div>
                     <div>
                         비밀번호
