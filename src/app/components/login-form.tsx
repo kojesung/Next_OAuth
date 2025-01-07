@@ -1,6 +1,8 @@
 'use client';
 
 import { useStore } from '@/hooks/useUserInfo';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 
 interface HookFormTypes {
@@ -9,13 +11,26 @@ interface HookFormTypes {
 }
 
 export default function LoginForm() {
-    const { register, handleSubmit, getValues } = useForm<HookFormTypes>();
+    const {
+        register,
+        handleSubmit,
+        getValues,
+        setError,
+        clearErrors,
+        formState: { errors },
+    } = useForm<HookFormTypes>();
+    const router = useRouter();
     const login = useStore((state) => state.login);
     const onValid: SubmitHandler<HookFormTypes> = () => {
         const id = getValues('id');
         const pw = getValues('password');
         console.log(id, pw);
-        login('고제성');
+        if (checkIdPw(id, pw)) {
+            clearErrors('id');
+            router.push('/');
+        } else {
+            setError('id', { message: '어어어어' });
+        }
     };
     const onInValid: SubmitErrorHandler<HookFormTypes> = (errors) => {
         console.error(errors);
@@ -23,6 +38,23 @@ export default function LoginForm() {
     const name = useStore((state) => state.name);
 
     console.log(name);
+
+    const checkIdPw = (id: string, pw: string) => {
+        const userInfoStr = localStorage.getItem('userInfo');
+        if (!userInfoStr) {
+            return false; // 저장된 유저 정보가 없음
+        }
+
+        const userInfo = JSON.parse(userInfoStr);
+
+        // ID와 비밀번호가 모두 일치하는지 확인
+        if (userInfo.id === id && userInfo.password === pw) {
+            login(userInfo.name);
+            return true;
+        }
+
+        return false;
+    };
 
     return (
         <div>
@@ -45,7 +77,7 @@ export default function LoginForm() {
                 />
                 <div className="my-4">
                     <div>체크박스</div>
-                    <div>일치여부</div>
+                    {errors.id && <p className="text-red-500 text-sm mt-1">{errors.id.message}</p>}
                 </div>
                 <input
                     type="submit"
@@ -57,7 +89,9 @@ export default function LoginForm() {
             <div className="mt-4 space-x-2">
                 <button className="text-gray-600">아이디 찾기</button>
                 <button className="text-gray-600">비밀번호 찾기</button>
-                <button className="text-gray-600">회원가입</button>
+                <Link className="text-gray-600" href="/sign-up">
+                    회원가입
+                </Link>
             </div>
             <div className="mt-4 space-x-2">
                 <button className="bg-green-500 text-white px-4 py-2 rounded-md">네이버</button>

@@ -1,0 +1,32 @@
+{
+    "users": [
+        {
+            "id": "youthlab",
+            "name": "청년연구소"
+        },
+        {
+            "id": "test123",
+            "name": "테스트"
+        },
+        {
+            "id": "javascript",
+            "name": "자바스크립트"
+        },
+        {
+            "id": "react2024",
+            "name": "리액트"
+        },
+        {
+            "id": "nextjs",
+            "name": "넥스트"
+        },
+        {
+            "id": "admin",
+            "name": "관리자"
+        },
+        {
+            "id": "developer",
+            "name": "개발자"
+        }
+    ]
+}
