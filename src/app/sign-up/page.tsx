@@ -65,7 +65,15 @@ export default function SignUp() {
             setError('id', { message: '아이디 중복 확인이 필요합니다' });
             return;
         }
-        console.log(data);
+        const userInfo = {
+            id: data.id,
+            password: data.password,
+            name: data.name,
+            gender: data.gender,
+            phone: `${data.phone1}-${data.phone2}-${data.phone3}`,
+        };
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+        console.log(userInfo);
         router.push('/login');
     };
 
