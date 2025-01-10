@@ -4,6 +4,7 @@ import { useStore } from '@/hooks/useUserInfo';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import KakaoLoginBtn from './login/KakaoLoginBtn';
 
 interface HookFormTypes {
     id: string;
@@ -35,9 +36,6 @@ export default function LoginForm() {
     const onInValid: SubmitErrorHandler<HookFormTypes> = (errors) => {
         console.error(errors);
     };
-    const name = useStore((state) => state.name);
-
-    console.log(name);
 
     const checkIdPw = (id: string, pw: string) => {
         const userInfoStr = localStorage.getItem('userInfo');
@@ -94,6 +92,7 @@ export default function LoginForm() {
                 </Link>
             </div>
             <div className="mt-4 space-x-2">
+                <KakaoLoginBtn></KakaoLoginBtn>
                 <button className="bg-green-500 text-white px-4 py-2 rounded-md">네이버</button>
                 <button className="bg-yellow-500 text-white px-4 py-2 rounded-md">카카오</button>
             </div>
