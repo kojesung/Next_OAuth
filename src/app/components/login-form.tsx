@@ -36,9 +36,6 @@ export default function LoginForm() {
     const onInValid: SubmitErrorHandler<HookFormTypes> = (errors) => {
         console.error(errors);
     };
-    const name = useStore((state) => state.name);
-
-    console.log(name);
 
     const checkIdPw = (id: string, pw: string) => {
         const userInfoStr = localStorage.getItem('userInfo');
